@@ -1,8 +1,6 @@
 package com.example.employeeinformationservice;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +17,20 @@ public class EmployeeInformationController {
     @GetMapping
     public List<Employee> getAll(){
         return this.employeeServiceClient.getAll();
+    }
+
+    @PostMapping
+    public Employee addEmployee(@RequestBody Employee employee){
+        return this.employeeServiceClient.addEmployee(employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public Response delEmployee(@PathVariable(value = "id") int id){
+        return this.employeeServiceClient.delEmployee(id);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployee(@RequestBody Employee employee, @PathVariable(value = "id") int id){
+        return this.employeeServiceClient.updateEmployee(employee, id);
     }
 }
