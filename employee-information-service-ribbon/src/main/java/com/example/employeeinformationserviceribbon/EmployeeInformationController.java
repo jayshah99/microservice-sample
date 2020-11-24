@@ -16,7 +16,7 @@ public class EmployeeInformationController {
 
     private final RestTemplate restTemplate;
 
-    public EmployeeInformationController( RestTemplate restTemplate) {
+    public EmployeeInformationController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -30,20 +30,53 @@ public class EmployeeInformationController {
         return addEmployees(employee);
     }
 
+    @DeleteMapping("/{id}")
+    public Response delEmployee(@PathVariable(value = "id") int id) {
+        return delEmployees(id);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployee(@RequestBody Employee employee, @PathVariable(value = "id") int id) {
+        return updateEmployees(employee,id);
+    }
+
     public List<Employee> getEmployees() {
         ResponseEntity<List<Employee>> exchange = this.restTemplate.exchange(
                 "http://EMPLOYEESERVICE/api/v1/employees",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<>() {
+                });
 
         return exchange.getBody();
     }
+
     public Employee addEmployees(Employee employee) {
         HttpEntity<Employee> request = new HttpEntity<>(employee);
         ResponseEntity<Employee> exchange = this.restTemplate.exchange(
                 "http://EMPLOYEESERVICE/api/v1/employees",
                 HttpMethod.POST,
+                request,
+                Employee.class);
+
+        return exchange.getBody();
+    }
+
+    public Response delEmployees(int id) {
+        HttpEntity<Integer> request = new HttpEntity<>(id);
+        ResponseEntity<Response> exchange = this.restTemplate.exchange(
+                String.format("http://EMPLOYEESERVICE/api/v1/employees/%s", id),
+                HttpMethod.DELETE,
+                null,
+                Response.class);
+
+        return exchange.getBody();
+    }
+    public Employee updateEmployees(Employee employee, int id) {
+        HttpEntity<Employee> request = new HttpEntity<>(employee);
+        ResponseEntity<Employee> exchange = this.restTemplate.exchange(
+                String.format("http://EMPLOYEESERVICE/api/v1/employees/%s", id),
+                HttpMethod.PUT,
                 request,
                 Employee.class);
 
